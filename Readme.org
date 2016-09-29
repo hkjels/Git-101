@@ -1,0 +1,147 @@
+
+* Git 101
+
+In an effort to bring the team up and running on git, I've made this
+tiny guide of the most essential commands.
+
+* Initialization
+
+To instantiate a repository for your code, you have to create a
+repository, stage changes and commit them.
+
+#+BEGIN_SRC shell
+git init .
+#+END_SRC
+
+#+BEGIN_SRC shell :results silent
+git add Readme.org Somefile.txt
+#+END_SRC
+
+#+BEGIN_SRC shell
+git commit -m "Initialize Repository"
+#+END_SRC
+
+So, that's our first commit!
+
+* Sharing Code
+
+At this point, the code only lives on my local machine, so it's next
+to impossible to get involved. Let's fix that!
+
+#+BEGIN_SRC shell :results silent
+git remote add origin git@github.com:hkjels/Git-101.git
+#+END_SRC
+
+Here we are saying that we would like to add a remote target with the
+local-reference origin to the URL git@github....
+
+If we then do a
+
+#+BEGIN_SRC shell :results silent
+git push -u origin master
+#+END_SRC
+
+We send our first commit of to Github's server. Notice that I use the
+~-u~ flag. That will make this repository's master-branch point to the
+origin's master-branch for all subsequent pushes, so that you don't
+have to specify anything other than ~git push~ later on.
+
+* Branching
+
+Branch, branch, branch! If you come from the SVN-lair, you might think
+twice before merging because of resources and the time you'll need to
+spend, but with Git it's almost instant, so branch away!
+
+#+BEGIN_SRC shell
+git checkout -b "fix/typo"
+#+END_SRC
+
+We are now in the ~fix/typo~ branch, so I'll just do that before moving on.
+/Whistle, whistle, tada, bum, ti, dum.../
+
+#+BEGIN_SRC shell
+git commit -a -m "Correct the typo"
+#+END_SRC
+
+/Note, I discourage the use of the ~-a~ flag, but I think it's OK for
+demonstration purposes/
+
+* Merging
+  
+Let's jump into our master-branch
+
+#+BEGIN_SRC shell
+git checkout master
+#+END_SRC
+
+From here, we can now merge in the changes made to our ~fix/typo~
+branch.
+
+#+BEGIN_SRC shell
+git merge fix/typo
+#+END_SRC
+
+#+BEGIN_SRC shell
+git push
+#+END_SRC
+
+The corrected code now lives in a remote repository, so others can
+pitch in.
+
+* The Other end
+
+Now, imagine for a second that someone else did that last commit.
+
+#+BEGIN_SRC shell
+git reset HEAD~ --hard
+#+END_SRC
+
+/Here we reset the tip of this branch (master) to one commit earlier
+than HEAD, which is the last change that was pushed./
+
+We can simply do a
+
+#+BEGIN_SRC shell
+git pull
+#+END_SRC
+
+And now our master-branch is aligned with the remote origin's master-branch.
+
+* Resolving Conflicts
+
+Again, lets imagine that someone else did that last commit.
+
+#+BEGIN_SRC shell
+git reset HEAD~ --hard
+#+END_SRC
+
+Now, I will make a change to the same line as that other doofus and we
+will end up with a merge-conflict when I try to ~pull~.
+
+#+BEGIN_SRC shell
+git commit -a -m "Make the pitch friendlier"
+#+END_SRC
+
+This will fail, for the obvious reason that we are behind the remote
+origin's master.
+
+#+BEGIN_SRC shell :results silent
+git push
+#+END_SRC
+
+So we have to retrieve the changes. And yes, this will fail as well,
+because we have a conflict.
+
+#+BEGIN_SRC shell
+git pull
+#+END_SRC
+
+Resolving that piece of shit!..
+
+#+BEGIN_SRC shell
+git rebase --continue
+#+END_SRC
+
+#+BEGIN_SRC shell :results silent
+git push
+#+END_SRC
